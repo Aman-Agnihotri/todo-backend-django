@@ -5,6 +5,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ---
 
 ## Project Structure
+
 ```
 .
 ├── db.sqlite3
@@ -30,7 +31,6 @@ This project is a simple Todo application implemented with Django, providing a f
 └── ...
 ```
 
-
 ---
 
 ## Major Components
@@ -38,6 +38,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_app/models.py`
 
 • Defines the **Todo** model with the following fields:
+
 - title (CharField)  
 - description (TextField, optional)  
 - completed (BooleanField, defaults to False)  
@@ -50,6 +51,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_app/serializers.py`
 
 • Contains two serializers:  
+
 1. **UserSerializer**  
    - Serializes/deserializes data for Django’s User model  
    - Includes handling for password creation  
@@ -82,6 +84,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_app/urls.py`
 
 • Routes API endpoints:
+
 - `/todos/` → All TodoViewSet operations  
 - `/register/` → register_user  
 - `/login/` → login_user  
@@ -89,6 +92,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_backend/settings.py`
 
 • Django settings, including:  
+
 - Installed apps (DRF, CORS, `todo_app`, etc.)  
 - SQLite database configuration  
 - Token authentication (via `rest_framework.authtoken`)  
@@ -97,12 +101,14 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_backend/urls.py`
 
 • Defines global URLs:  
+
 - `/admin/` → Django’s admin site  
 - `/api/` → Routes from `todo_app/urls.py`
 
 ### `todo_app/admin.py`
 
 • Registers the Todo model in Django admin:  
+
 - Custom list display, filters, search  
 - Fieldsets for logical grouping  
 - User isolation for non-superusers
@@ -110,6 +116,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ### `todo_app/tests.py`
 
 • Test suite covering:  
+
 - User registration and login  
 - CRUD on todos  
 - Status calculations (pending, completed, overdue)  
@@ -122,22 +129,26 @@ This project is a simple Todo application implemented with Django, providing a f
 ## Installation & Setup
 
 1. Install packages:
+
 ```bash
    pip install django djangorestframework django-cors-headers
 ```
 
 2. Apply migrations
+
 ```bash
    python manage.py makemigrations
    python manage.py migrate
 ```
 
 3. Create a superuser:
+
 ```bash
    python manage.py createsuperuser
 ```
 
 4. Run the development server:
+
 ```bash
    python manage.py runserver
 ```
@@ -151,7 +162,8 @@ This project is a simple Todo application implemented with Django, providing a f
 ## API Usage
 
 1. **Register a User**  
-   POST `/api/register/`  
+   POST `/api/register/`
+
    ```json
    {
      "username": "newuser",
@@ -159,20 +171,24 @@ This project is a simple Todo application implemented with Django, providing a f
      "email": "new@example.com"
    }
    ```
+
    Returns a token, user_id, and username.
 
 2. **Log In**  
    POST `/api/login/`  
+
    ```json
    {
      "username": "newuser",
      "password": "newpass123"
    }
    ```
+
    Returns a token, user_id, and username.
 
 3. **Authenticated Requests**  
-   Include the header:  
+   Include the header:
+
    ```
    Authorization: Token <your_token>
    ```
@@ -202,6 +218,7 @@ This project is a simple Todo application implemented with Django, providing a f
 ```bash
 python manage.py test todo_app
 ```
+
 This command will run all tests located in `todo_app/tests.py`, covering registration, login, todos CRUD, statistics, and user isolation.
 
 ---
@@ -209,36 +226,49 @@ This command will run all tests located in `todo_app/tests.py`, covering registr
 ## Key Highlights
 
 1. **Django Backend Implementation ✓**
+
 - Complete `models.py` with `Todo` model
 - REST API views in `views.py`
 - URL routing in `urls.py`
+
 2. **SQL Database Integration ✓**
+
 - Using SQLite as configured in `settings.py`
 - Database migrations in migrations/
 - Model queries in `TodoViewSet`
+
 3. **User Authentication ✓**
+
 - Token-based authentication
 - Login/Register endpoints
 - User-specific todo items
 - Password hashing and validation
+
 4. **Todo Features ✓**
+
 - CRUD operations
 - Filtering and searching
 - Priority levels
 - Due dates
 - Status tracking (pending/completed/overdue)
 - Statistics endpoint
+
 5. **Admin Interface ✓**
+
 - Customized admin panel in `admin.py`
 - User-specific views
 - Filtering and searching capabilities
+
 6. **API Endpoints ✓**
+
 - `POST /api/register/` - User registration
 - `POST /api/login/` - User login
 - `GET/POST /api/todos/` - List/Create todos
 - `GET/PUT/DELETE /api/todos/{id}/` - Retrieve/Update/Delete todo
 - `GET /api/todos/statistics/` - Todo statistics
 - `DELETE /api/todos/clear_completed/` - Clear completed todos
+
 7. **Testing ✓**
+
 - Comprehensive test suite in `tests.py`
 - Coverage of all major functionality
