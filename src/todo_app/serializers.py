@@ -16,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class TodoSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
+    title = serializers.CharField(max_length=100, required=False)
     
     class Meta:
         model = Todo
@@ -23,6 +24,9 @@ class TodoSerializer(serializers.ModelSerializer):
                  'created_at', 'updated_at', 'due_date', 
                  'priority', 'status')
         read_only_fields = ('created_at', 'updated_at')
+        extra_kwargs = {
+            'title': {'required': False}
+        }
 
     def get_status(self, obj):
         if (obj.completed):
@@ -30,3 +34,8 @@ class TodoSerializer(serializers.ModelSerializer):
         if (obj.due_date and obj.due_date < timezone.now()):
             return "overdue"
         return "pending"
+    
+    def validate(self, data):
+        if self.instance is None and 'title' not in data:
+            raise serializers.ValidationError({'title': 'Title is required.'})
+        return data
