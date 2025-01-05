@@ -1,4 +1,213 @@
-### TO-DO App using Django
+# Django Todo App Documentation
+
+This project is a simple Todo application implemented with Django, providing a fully-featured backend that includes user authentication (token-based), CRUD operations on todos, filtering, searching, and an admin interface.
+
+---
+
+## Project Structure
+```
+.
+├── db.sqlite3
+├── manage.py
+├── todo_app
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   ├── __init__.py
+│   │   └── 0001_initial.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── todo_backend
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── ...
+```
+
+
+---
+
+## Major Components
+
+### `todo_app/models.py`
+
+• Defines the **Todo** model with the following fields:
+- title (CharField)  
+- description (TextField, optional)  
+- completed (BooleanField, defaults to False)  
+- created_at (DateTimeField, auto_now_add=True)  
+- updated_at (DateTimeField, auto_now=True)  
+- due_date (DateTimeField, optional)  
+- priority (IntegerField, choices=Low, Medium, High)  
+- user (ForeignKey to Django’s User model)
+
+### `todo_app/serializers.py`
+
+• Contains two serializers:  
+1. **UserSerializer**  
+   - Serializes/deserializes data for Django’s User model  
+   - Includes handling for password creation  
+2. **TodoSerializer**  
+   - Serializes/deserializes todos  
+   - Adds a custom status field (completed, overdue, or pending)
+
+### `todo_app/views.py`
+
+• Provides the REST API view logic:
+
+1. **TodoViewSet**  
+   - Inherits from DRF’s ModelViewSet  
+   - Implements CRUD operations for todos  
+   - Filters by user, status (pending, completed, overdue), and supports searching/ordering  
+   - Custom endpoints:
+     - GET `/statistics/` → Statistics of all todos for that user  
+     - DELETE `/clear_completed/` → Bulk delete of completed todos  
+
+2. **register_user**  
+   - POST `/register/`  
+   - Creates a new user account  
+   - Generates and returns a token  
+
+3. **login_user**  
+   - POST `/login/`  
+   - Authenticates user credentials  
+   - Returns a token for subsequent requests  
+
+### `todo_app/urls.py`
+
+• Routes API endpoints:
+- `/todos/` → All TodoViewSet operations  
+- `/register/` → register_user  
+- `/login/` → login_user  
+
+### `todo_backend/settings.py`
+
+• Django settings, including:  
+- Installed apps (DRF, CORS, `todo_app`, etc.)  
+- SQLite database configuration  
+- Token authentication (via `rest_framework.authtoken`)  
+- Default permission set to `IsAuthenticated` (token required)
+
+### `todo_backend/urls.py`
+
+• Defines global URLs:  
+- `/admin/` → Django’s admin site  
+- `/api/` → Routes from `todo_app/urls.py`
+
+### `todo_app/admin.py`
+
+• Registers the Todo model in Django admin:  
+- Custom list display, filters, search  
+- Fieldsets for logical grouping  
+- User isolation for non-superusers
+
+### `todo_app/tests.py`
+
+• Test suite covering:  
+- User registration and login  
+- CRUD on todos  
+- Status calculations (pending, completed, overdue)  
+- Statistics endpoint (`/todos/statistics/`)  
+- Clear completed endpoint (`/todos/clear_completed/`)  
+- User isolation checks  
+
+---
+
+## Installation & Setup
+
+1. Install packages:
+```bash
+   pip install django djangorestframework django-cors-headers
+```
+
+2. Apply migrations
+```bash
+   python manage.py makemigrations
+   python manage.py migrate
+```
+
+3. Create a superuser:
+```bash
+   python manage.py createsuperuser
+```
+
+4. Run the development server:
+```bash
+   python manage.py runserver
+```
+
+5. Access Django admin at:
+[localhost:8000/admin](http://127.0.0.1:8000/admin/)
+(Use superuser credentials)
+
+---
+
+## API Usage
+
+1. **Register a User**  
+   POST `/api/register/`  
+   ```json
+   {
+     "username": "newuser",
+     "password": "newpass123",
+     "email": "new@example.com"
+   }
+   ```
+   Returns a token, user_id, and username.
+
+2. **Log In**  
+   POST `/api/login/`  
+   ```json
+   {
+     "username": "newuser",
+     "password": "newpass123"
+   }
+   ```
+   Returns a token, user_id, and username.
+
+3. **Authenticated Requests**  
+   Include the header:  
+   ```
+   Authorization: Token <your_token>
+   ```
+
+4. **Todo Operations**  
+   - GET `/api/todos/`  
+     List all todos for the authenticated user  
+   - POST `/api/todos/`  
+     Create a new todo  
+   - GET `/api/todos/{id}/`  
+     Retrieve a specific todo  
+   - PATCH/PUT `/api/todos/{id}/`  
+     Update a specific todo  
+   - DELETE `/api/todos/{id}/`  
+     Delete a specific todo
+
+5. **Additional Endpoints**  
+   - GET `/api/todos/statistics/`  
+     Returns total, completed, pending, and overdue counts  
+   - DELETE `/api/todos/clear_completed/`  
+     Deletes all completed todos
+
+---
+
+## Running Tests
+
+```bash
+python manage.py test todo_app
+```
+This command will run all tests located in `todo_app/tests.py`, covering registration, login, todos CRUD, statistics, and user isolation.
+
+---
+
+## Key Highlights
+
 1. **Django Backend Implementation ✓**
 - Complete `models.py` with `Todo` model
 - REST API views in `views.py`
