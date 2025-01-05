@@ -205,7 +205,48 @@ This project is a simple Todo application implemented with Django, providing a f
    - DELETE `/api/todos/{id}/`  
      Delete a specific todo
 
-5. **Additional Endpoints**  
+5. **Advanced API Features**
+
+- **Filtering** - Filter todos by their status using query parameters:
+
+  - `GET /api/todos/?status=completed` - Get completed todos
+  - `GET /api/todos/?status=pending` - Get pending todos
+  - `GET /api/todos/?status=overdue` - Get overdue todos
+
+- **Searching** - Search through todos using the search parameter:
+
+  - `GET /api/todos/?search=keyword` - Search in title and description fields
+
+- **Ordering** - Order todos using the ordering parameter:
+
+  - `GET /api/todos/?ordering=created_at` - Order by creation date (ascending)
+  - `GET /api/todos/?ordering=-created_at` - Order by creation date (descending)
+  - `GET /api/todos/?ordering=due_date` - Order by due date
+  - `GET /api/todos/?ordering=priority` - Order by priority
+
+Available ordering fields: `created_at`, `due_date`, `priority`
+
+- **Request** Examples
+
+  1. Search for high priority todos:
+
+   ```bash
+   GET /api/todos/?search=important&ordering=-priority
+   ```
+
+  2. Get overdue todos ordered by due date:
+
+  ```bash
+  GET /api/todos/?status=overdue&ordering=due_date
+  ```
+
+  3. Get completed todos created recently:
+
+  ```bash
+  GET /api/todos/?status=completed&ordering=-created_at
+  ```
+
+6. **Additional Endpoints**  
    - GET `/api/todos/statistics/`  
      Returns total, completed, pending, and overdue counts  
    - DELETE `/api/todos/clear_completed/`  
