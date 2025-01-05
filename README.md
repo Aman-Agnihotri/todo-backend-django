@@ -131,7 +131,7 @@ This project is a simple Todo application implemented with Django, providing a f
 1. Install packages:
 
 ```bash
-   pip install django djangorestframework django-cors-headers
+   pip install -r requirements.txt
 ```
 
 2. Apply migrations
